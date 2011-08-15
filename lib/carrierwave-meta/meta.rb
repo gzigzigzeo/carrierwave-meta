@@ -4,8 +4,9 @@ module CarrierWave
 
     included do
       include CarrierWave::ModelDelegateAttribute
-      
-      after :retrieve_from_cache, :store_meta
+
+      after :retrieve_from_cache, :set_content_type_and_store_meta
+      after :retrieve_from_store, :set_content_type_and_store_meta
 
       model_delegate_attribute :content_type, ''
       model_delegate_attribute :file_size, 0
@@ -15,14 +16,10 @@ module CarrierWave
     end
 
     module InstanceMethods
-      def store_meta(file = nil)
-        puts 'before'
+      def store_meta
         if self.file.present?
-          puts 'in'
           dimensions = get_dimensions
           width, height = dimensions
-puts dimensions.inspect
-puts self.file.inspect
           self.content_type = self.file.content_type
           self.file_size = self.file.size
           self.image_size = dimensions
@@ -32,9 +29,13 @@ puts self.file.inspect
       end
       
       private    
+      def set_content_type_and_store_meta(file = nil)
+        set_content_type(true)
+        store_meta
+      end
+      
       def get_dimensions
         [].tap do |size|
-          puts 'started'
           if self.file.content_type =~ /image/
             manipulate! do |img|
               if img.is_a?(::Magick::Image)

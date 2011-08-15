@@ -36,7 +36,11 @@ module CarrierWave
     module InstanceMethods
       private
       def model_getter_name(attribute)
-        version_name.present? ? "#{version_name}_#{attribute}" : attribute
+        name = []
+        name << mounted_as if mounted_as.present?
+        name << version_name if version_name.present?
+        name << attribute
+        name.join('_')
       end
     end
   end

@@ -3,8 +3,6 @@ class TestUploader < CarrierWave::Uploader::Base
   include CarrierWave::Meta
   include CarrierWave::MimeTypes
   
-  process :set_content_type => true
-
   def store_dir
     "tmp/store"
   end
@@ -15,9 +13,11 @@ class TestUploader < CarrierWave::Uploader::Base
 
   storage :file
 
+  set_content_type(true)
   process :store_meta
   version :version do
-    process :resize_to_fit => [200, 200]
+    process :resize_to_fill => [200, 200]
+    set_content_type(true)
     process :store_meta
   end
 end

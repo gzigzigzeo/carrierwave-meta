@@ -18,10 +18,10 @@ describe TestDelegateUploader do
   end
 
   def obj_values_are_correct(obj)
-    obj.x.should eq(values[:x])
-    obj.dimensions.should eq(values[:dimensions])    
-    obj.version_x.should eq(values[:version_x])
-    obj.version_dimensions.should eq(values[:version_dimensions])      
+    obj.image_x.should eq(values[:x])
+    obj.image_dimensions.should eq(values[:dimensions])    
+    obj.image_version_x.should eq(values[:version_x])
+    obj.image_version_dimensions.should eq(values[:version_dimensions])      
   end
 
   def uploader_values_are_default(obj)
@@ -47,7 +47,7 @@ describe TestDelegateUploader do
 
     # CarrierWave's file is removed in after_destroy callback. Model attributes are freezed after destroy. 
     # Let mock this case.
-    obj.x.freeze
+    obj.image_x.freeze
     obj.destroyed = true
     uploader.remove!
 

@@ -9,14 +9,7 @@ rescue Bundler::GemNotFound
     "Did you run `bundle install`?"
 end
 
-#require 'logger'
-
-#ActiveRecord::Base.establish_connection(
-#  "adapter" => "sqlite3", 
-#  "database" => ":memory:"
-#)
-
-#require 'support/schema'
+require 'mime/types'
 require 'carrierwave'
 require 'carrierwave-meta'
 require 'support/test_delegate_uploader'

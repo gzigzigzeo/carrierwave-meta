@@ -22,6 +22,6 @@ Gem::Specification.new do |s|
   s.add_dependency(%q<activesupport>, [">= 3.0"])  
   s.add_development_dependency(%q<rspec-rails>, ">= 2.6")
   s.add_development_dependency(%q<sqlite3-ruby>)    
-  s.add_development_dependency(%q<rmagick>)  
-  s.add_development_dependency(%q<mime-types>)  
+  s.add_development_dependency(%q<rmagick>)
+  s.add_development_dependency(%q<mime-types>)
 end
