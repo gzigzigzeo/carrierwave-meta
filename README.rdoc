@@ -77,12 +77,6 @@ model instance. If uploader has attached model instance values are read from tha
 
   uploader.version.width # 200
 
-So, if you are storing width and height in database column and then you decided to store 
-content type, you should create database columns for content_type field and call #recreate_versions! 
-for each instance in your model's table.
-
-Uploader tries to retrieve metadata from a model's column first.
-
 = model_delegate_attribute
 
 Used to synchronize data between uploader and mounted model. Model is used like values cache.
