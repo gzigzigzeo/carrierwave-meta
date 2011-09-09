@@ -81,6 +81,8 @@ Uploader tries to retrieve metadata from a model's column first.
 
 = model_delegate_attribute
 
+Used to synchronize data between uploader and mounted model. Model is used like values cache.
+
   class DelegateTestModel
     attr_accessor :processed
     attr_accessor :a_processed
@@ -120,8 +122,6 @@ Uploader tries to retrieve metadata from a model's column first.
   uploader.a_processed   # false
   uploader.a_b_processed # true
 
-Is used to synchronize data between uploader and mounted model. Model is used like values cache.
-
 When model is mounted to uploader:
 
 1. When assigned inside uploader, assigns corresponding property in model.
@@ -154,8 +154,8 @@ The uploader:
 
     # Defines crop area dimensions.
     # This should be assigned before store! and cache! called and should be saved in the model's instance. 
-    # If crop ared dimensions are'nt assigned, uploader creates default cropped image and saves it's dimensions.
     # Otherwise cropped image would be lost after recreate_versions! is called.
+    # If crop area dimensions are'nt assigned, uploader creates default cropped image and saves it's dimensions.
     model_delegate_attribute :x
     model_delegate_attribute :y
     model_delegate_attribute :w
