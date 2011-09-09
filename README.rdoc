@@ -1,0 +1,86 @@
+= carrierwave-meta
+
+= Installation
+
+Add the following line to your Gemfile:
+  gem 'carrierwave-meta'
+
+= Usage example
+
+  class TestUploader < CarrierWave::Uploader::Base
+    include CarrierWave::RMagick
+    include CarrierWave::Meta
+  
+    def store_dir
+      "tmp/store"
+    end
+
+    def cache_dir
+      "tmp/cache"
+    end
+
+    storage :file
+
+    process :store_meta
+    version :version do
+      process :resize_to_fill => [200, 200]
+      process :store_meta
+    end
+  end
+  
+  file = File.open('test.jpg') # JPEG 500x300, 20000 bytes
+  uploader = TestUploader.new
+  uploader.store!(file)
+  
+  uploader.width        # 500
+  uploader.height       # 300
+  uploader.image_size   # [500, 300]
+  uploader.file_zie     # 20000
+  uploader.content_type # "image/jpeg"
+  
+  uploader.version.width        # 200
+  uploader.version.height       # 200  
+  uploader.version.image_size   # [200, 200]  
+  uploader.version.file_zie     # less than 20000
+  uploader.version.content_type # "image/jpeg"
+
+= Saving values to database
+
+  class TestModel
+    attr_accessor :image_width  
+    attr_accessor :image_height
+    attr_accessor :image_image_size  
+    attr_accessor :image_content_type
+    attr_accessor :image_file_size
+
+    attr_accessor :image_version_width  
+    attr_accessor :image_version_height
+    attr_accessor :image_version_image_size
+    attr_accessor :image_version_content_type
+    attr_accessor :image_version_file_size  
+  end
+
+  file = File.open('test.jpg')
+  model = TestModel.new
+  uploader = TestUploader.new(model, :image)
+  uploader.store!(file)
+  
+  uploader.width      # 500
+  model.image_width   # 500
+  model.image_height  # 300
+  ...
+
+When columns are available in the model instance, metadata is stored in that columns.
+
+= Behind the scenes
+
+After the file is retrieved from store metadata is recalculated for it unless uploader has
+attached model instance. If it has metadata values are retrieved from a model.
+
+  uploader = TestUploader.new
+  uploader.retrieve_from_store!('test.jpg')
+
+  uploader.version.width        # 200
+
+When uploader metadata accessor methods are called they are trying to retrieve value from a model first, 
+and if model's value is blank, it returns uploader value.

@@ -92,21 +92,21 @@ describe TestUploader do
     end
   
     it "has metadata after cache!/retrieve_from_cache!" do
-      uploader = TestUploader.new
+      uploader = TestUploader.new(obj, :image)
       uploader.cache!(file)
       cache_name = uploader.cache_name
 
-      uploader = TestUploader.new
+      uploader = TestUploader.new(obj, :image)
       uploader.retrieve_from_cache!(cache_name)
       uploader_values_are_correct(uploader)
     end
     
     it "has metadata after store!/retrieve_from_store!" do
-      uploader = TestUploader.new
+      uploader = TestUploader.new(obj, :image)
       uploader.store!(file)
       uploader_values_are_correct(uploader)
       
-      uploader = TestUploader.new
+      uploader = TestUploader.new(obj, :image)
       uploader.retrieve_from_store!(File.basename(file.path))
       uploader_values_are_correct(uploader)      
     end    

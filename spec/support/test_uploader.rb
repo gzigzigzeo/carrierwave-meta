@@ -1,7 +1,6 @@
 class TestUploader < CarrierWave::Uploader::Base
   include CarrierWave::RMagick
   include CarrierWave::Meta
-  include CarrierWave::MimeTypes
   
   def store_dir
     "tmp/store"
