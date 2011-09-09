@@ -79,7 +79,7 @@ model instance. If uploader has attached model instance values are read from tha
 
 = model_delegate_attribute
 
-Used to synchronize data between uploader and mounted model. Model is used like values cache.
+Used to synchronize data between uploader and mounted model instance. Model's instance is used like value cache.
 
   class DelegateTestModel
     attr_accessor :processed
