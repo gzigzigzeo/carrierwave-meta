@@ -75,12 +75,9 @@ When columns are available in the model instance, metadata is stored in that col
 = Behind the scenes
 
 After the file is retrieved from store metadata is recalculated for it unless uploader has
-attached model instance. If it has metadata values are retrieved from a model.
+attached model instance. Uploader tries to retrieve metadata from a model's column first.
 
   uploader = TestUploader.new
   uploader.retrieve_from_store!('test.jpg')
 
-  uploader.version.width        # 200
-
-When uploader metadata accessor methods are called they are trying to retrieve value from a model first, 
-and if model's value is blank, it returns uploader value.
+  uploader.version.width # 200
