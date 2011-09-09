@@ -4,9 +4,14 @@ module CarrierWave
 
     included do
       include CarrierWave::ModelDelegateAttribute
+      include CarrierWave::MimeTypes
 
-      after :retrieve_from_cache, :set_content_type_and_store_meta
-      after :retrieve_from_store, :set_content_type_and_store_meta
+      set_content_type(true)
+      
+      after :retrieve_from_cache, :set_content_type
+      after :retrieve_from_cache, :call_store_meta
+      after :retrieve_from_store, :set_content_type
+      after :retrieve_from_store, :call_store_meta
 
       model_delegate_attribute :content_type, ''
       model_delegate_attribute :file_size, 0
@@ -28,9 +33,12 @@ module CarrierWave
         end
       end
       
-      private    
-      def set_content_type_and_store_meta(file = nil)
+      def set_content_type(file = nil)
         set_content_type(true)
+      end
+      
+      private
+      def call_store_meta(file = nil)
         store_meta
       end
       

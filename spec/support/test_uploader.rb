@@ -13,11 +13,9 @@ class TestUploader < CarrierWave::Uploader::Base
 
   storage :file
 
-  set_content_type(true)
   process :store_meta
   version :version do
     process :resize_to_fill => [200, 200]
-    set_content_type(true)
     process :store_meta
   end
 end
