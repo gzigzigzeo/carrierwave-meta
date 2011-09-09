@@ -92,4 +92,7 @@ Uploader tries to retrieve metadata from a model's column first.
 
 = TODO
 
-1. I do not know how it would work with S3 and other remote storages.
+1. I do not know how it would work with S3 and other remote storages. Should be tested.
+2. Write integration guide for JCrop.
+3. A notice about content-type.
+4. It works now only with RMagick. Add support for other image libraries. It's easy.
