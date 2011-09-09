@@ -75,9 +75,21 @@ When columns are available in the model instance, metadata is stored in that col
 = Behind the scenes
 
 After the file is retrieved from store metadata is recalculated for it unless uploader has
-attached model instance. Uploader tries to retrieve metadata from a model's column first.
+attached model instance.
 
   uploader = TestUploader.new
   uploader.retrieve_from_store!('test.jpg')
 
   uploader.version.width # 200
+
+So, if you are storing width and height in database column and then you decided to store 
+content type.
+
+Uploader tries to retrieve metadata from a model's column first.
+
+= Integrating CarrierWave & JCrop using carrierwave-meta
+
+
+= TODO
+
+1. I do not know how it would work with S3 and other remote storages.
