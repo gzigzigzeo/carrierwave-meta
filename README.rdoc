@@ -78,7 +78,8 @@ model instance. If uploader has attached model instance values are read from tha
   uploader.version.width # 200
 
 So, if you are storing width and height in database column and then you decided to store 
-content type.
+content type, you should create database columns for content_type field and call #recreate_versions! 
+for each instance in your model's table.
 
 Uploader tries to retrieve metadata from a model's column first.
 
@@ -156,8 +157,8 @@ The uploader:
     end
 
     # Defines crop area dimensions.
-    # This should be assigned before store! and cache! called and should be saved in the model's instance. 
-    # Otherwise cropped image would be lost after recreate_versions! is called.
+    # This should be assigned before #store! and #cache! called and should be saved in the model's instance. 
+    # Otherwise cropped image would be lost after #recreate_versions! is called.
     # If crop area dimensions are'nt assigned, uploader creates default cropped image and saves it's dimensions.
     model_delegate_attribute :x
     model_delegate_attribute :y
