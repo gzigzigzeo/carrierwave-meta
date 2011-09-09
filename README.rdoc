@@ -38,8 +38,8 @@ Add the following line to your Gemfile:
 
 = Saving values to database
 
-Simply create database columns to hold metadata. Currently gem supports width, height, image_size ([width, height]), content_type
-and file size fields. Versions are supported.
+Simply create database columns to hold metadata in your model's table. Currently gem supports width, height, 
+image_size ([width, height]), content_type and file_size fields. Versions are supported too.
 
   class TestModel
     attr_accessor :image_width  
@@ -69,8 +69,8 @@ When columns are available in the model instance, metadata is stored in that col
 
 = Behind the scenes
 
-After the file is retrieved from store metadata is recalculated for it unless uploader has
-attached model instance.
+After the file is retrieved from store or cache metadata is recalculated unless uploader has attached
+model instance. If uploader has attached model instance values are read from that instance.
 
   uploader = TestUploader.new
   uploader.retrieve_from_store!('test.jpg')
