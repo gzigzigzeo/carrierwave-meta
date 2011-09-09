@@ -38,6 +38,9 @@ Add the following line to your Gemfile:
 
 = Saving values to database
 
+Simply create database columns to hold metadata. Currently gem supports width, height, image_size ([width, height]), content_type
+and file size fields. Versions are supported.
+
   class TestModel
     attr_accessor :image_width  
     attr_accessor :image_height
