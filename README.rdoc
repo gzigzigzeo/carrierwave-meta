@@ -136,16 +136,16 @@ Let implement the behavior like at this demo: http://deepliquid.com/projects/Jcr
 
 The uploader:
 
-  class PostImageUploader < SobakaUploader
+  class CropUploader < SobakaUploader
     include CarrierWave::Meta
 
     # Crop source is a source image converted from original (left image in the example).
     version :crop_source do
-      process :resize_to_fit => [538, 538]
+      process :resize_to_fit => [300, 300]
       process :store_meta
     
       # This is the cropped version of parent image. Let crop to 50x50 square.
-      version :big do
+      version :crop do
         process :crop_to => [50, 50]
       end
     end
@@ -153,7 +153,8 @@ The uploader:
     # Defines crop area dimensions.
     # This should be assigned before #store! and #cache! called and should be saved in the model's instance. 
     # Otherwise cropped image would be lost after #recreate_versions! is called.
-    # If crop area dimensions are'nt assigned, uploader creates default cropped image and saves it's dimensions.
+    # If crop area dimensions are'nt assigned, uploader calculates crop area dimensions inside the
+    # parent image and creates the default image.
     model_delegate_attribute :x
     model_delegate_attribute :y
     model_delegate_attribute :w
@@ -208,9 +209,42 @@ The uploader:
     end    
   end
 
+  # Post should have :crop_source_version_x, :crop_source_version_y, :crop_source_version_h, :crop_source_version_w columns
+  class Post < ActiveRecord::Base
+    mount_uploader CropUploader, :image
+  end
+
+  # Let's upload an image
+  post = Post.new
+  post.image = params[:image] # Let the uploaded file is 800x600 JPEG
+  post.save!
+
+  post.image.crop_source.width  # 300
+  post.image.crop_source.height # 200  
+  post.image.crop_source.crop.width  # 50
+  post.image.crop_source.crop.height # 50
+  
+  # Default crop area coordinates within the limits of big image dimensions: square at the center of an image
+  post.image.crop_source.crop.x      # 50
+  post.image.crop_source.crop.y      # 50
+  post.image.crop_source.crop.w      # 200 
+  post.image.crop_source.crop.h      # 200
+
+  # Let user change the crop area with JCrop script. Pass new crop area parameters to model.
+  post.crop_source_crop_x = 100
+  post.crop_source_crop_y = 100
+  post.crop_source_crop_w = 100
+  post.crop_source_crop_h = 100
+
+  post.save!
+  
+  post.image.crop_source.crop.width  # 50
+  post.image.crop_source.crop.height # 50
+
 = TODO
 
 1. I do not know how it would work with S3 and other remote storages. Should be tested.
 2. Write integration guide for JCrop.
 3. A notice about content-type.
 4. It works now only with RMagick. Add support for other image libraries. It's easy.
+5. Improve my english skills.
