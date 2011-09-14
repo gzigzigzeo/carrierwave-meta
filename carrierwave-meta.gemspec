@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   
   s.add_dependency(%q<carrierwave>, [">= 0.5.7"])
   s.add_dependency(%q<activesupport>, [">= 3.0"])  
+  s.add_dependency(%q<mime-types>)
   s.add_development_dependency(%q<rspec-rails>, ">= 2.6")
   s.add_development_dependency(%q<sqlite3-ruby>)    
   s.add_development_dependency(%q<rmagick>)

@@ -122,9 +122,9 @@ Used to synchronize data between uploader and mounted model instance. Model's in
 
 When model is mounted to uploader:
 
-1. When assigned inside uploader, assigns corresponding property in model.
-2. When retrieved from uploader instance first checks if value is defined in model and returns it. Otherwise returns uploader's instance variable.
-3. When file is deleted, value becomes nil.
+1. If attribute is assigned inside uploader then corresponding property in model is also assigned.
+2. If attribute is retrieved from uploader instance first checks that value is defined in model and returns it. Otherwise returns uploader's instance variable.
+3. If file is deleted, value becomes nil.
 
 Otherwise acts as regular uploader's instance variables.
 
@@ -139,7 +139,7 @@ The uploader:
   class CropUploader < SobakaUploader
     include CarrierWave::Meta
 
-    # Crop source is a source image converted from original (left image in the example).
+    # Crop source is a source image converted from original which could be bigger than source area (left image in the example).
     version :crop_source do
       process :resize_to_fit => [300, 300]
       process :store_meta
@@ -160,6 +160,7 @@ The uploader:
     model_delegate_attribute :w
     model_delegate_attribute :h
 
+    # Crop processor
     def crop_to(width, height)
       # Checks that crop area is defined and crop should be done.
       if ((crop_args[0] == crop_args[2]) || (crop_args[1] == crop_args[3]))
@@ -182,7 +183,7 @@ The uploader:
     end
 
     # Creates the default crop image.
-    # Here the original cropped image dimensions are restored and assigned to the model's instance.  
+    # Here the original crop area dimensions are restored and assigned to the model's instance.  
     def resize_to_fill_and_save_dimensions(new_width, new_height)
       manipulate! do |img|
         width, height = img.columns, img.rows
@@ -225,18 +226,18 @@ The uploader:
   post.image.crop_source.crop.height # 50
   
   # Default crop area coordinates within the limits of big image dimensions: square at the center of an image
-  post.image.crop_source.crop.x      # 50
-  post.image.crop_source.crop.y      # 50
-  post.image.crop_source.crop.w      # 200 
-  post.image.crop_source.crop.h      # 200
+  post.image.crop_source.crop.x # 50
+  post.image.crop_source.crop.y # 50
+  post.image.crop_source.crop.w # 200 
+  post.image.crop_source.crop.h # 200
 
-  # Let user change the crop area with JCrop script. Pass new crop area parameters to model.
+  # Let user change the crop area with JCrop script. Pass new crop area parameters to the model.
   post.crop_source_crop_x = 100
   post.crop_source_crop_y = 100
   post.crop_source_crop_w = 100
   post.crop_source_crop_h = 100
 
-  post.save!
+  post.save! # Crop image is reprocessed
   
   post.image.crop_source.crop.width  # 50
   post.image.crop_source.crop.height # 50

@@ -37,6 +37,10 @@ module CarrierWave
         set_content_type(true)
       end
       
+      def image_size_s
+        image_size.join('x')
+      end
+      
       private
       def call_store_meta(file = nil)
         # Re-retrieve metadata for a file only if model is not present.

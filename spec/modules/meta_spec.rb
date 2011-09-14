@@ -13,14 +13,16 @@ describe TestUploader do
     uploader.width.should eq(ORIGINAL_SIZE[0])
     uploader.height.should eq(ORIGINAL_SIZE[1])
     uploader.image_size.should eq(ORIGINAL_SIZE)
-    uploader.content_type.should eq(Mime::Types.type_for(file_name).first.to_s)
+    uploader.content_type.should eq(MIME::Types.type_for(file_name).first.to_s)
     uploader.file_size.should_not be_blank
+    uploader.image_size_s.should eq(ORIGINAL_SIZE.join('x'))
 
     uploader.version.width.should eq(VERSION_SIZE[0])
     uploader.version.height.should eq(VERSION_SIZE[1])
     uploader.version.image_size.should eq(VERSION_SIZE)
-    uploader.version.content_type.should eq(Mime::Types.type_for(file_name).first.to_s)
+    uploader.version.content_type.should eq(MIME::Types.type_for(file_name).first.to_s)
     uploader.version.file_size.should_not be_blank
+    uploader.version.image_size_s.should eq(VERSION_SIZE.join('x'))    
   end
 
   def obj_values_are_correct(obj)
@@ -35,11 +37,6 @@ describe TestUploader do
     obj.image_version_image_size.should eq(VERSION_SIZE)
     obj.image_version_content_type.should eq(MIME::Types.type_for(file_name).first.to_s)
     obj.image_version_file_size.should_not be_blank
-  end
-
-  def uploader_values_are_correct(obj)
-    obj.width.should eq(ORIGINAL_SIZE[0])
-    obj.height.should eq(ORIGINAL_SIZE[1])
   end
 
   context "detached uploader" do
