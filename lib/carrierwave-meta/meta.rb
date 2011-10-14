@@ -51,9 +51,12 @@ module CarrierWave
         [].tap do |size|
           if self.file.content_type =~ /image/
             manipulate! do |img|
-              if img.is_a?(::Magick::Image)
+              if defined?(::Magick::Image) && img.is_a?(::Magick::Image)
                 size << img.columns
                 size << img.rows
+              elsif defined?(::MiniMagick::Image) && img.is_a?(::MiniMagick::Image)
+                size << img["width"]
+                size << img["height"]
               else
                 raise "Only RMagick is supported yet. Fork and update it."
               end        

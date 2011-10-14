@@ -9,6 +9,8 @@ rescue Bundler::GemNotFound
     "Did you run `bundle install`?"
 end
 
+PROCESSOR = (ENV["PROCESSOR"] || :rmagick).to_sym
+
 require 'mime/types'
 require 'carrierwave'
 require 'carrierwave-meta'
