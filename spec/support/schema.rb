@@ -1,7 +1,7 @@
 ActiveRecord::Schema.define :version => 0 do
   create_table "test_models", :force => true do |t|
     t.string :image
-    
+
     t.integer :image_width
     t.integer :image_height
     t.string  :image_content_type

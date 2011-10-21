@@ -1,7 +1,7 @@
 module CarrierWave
   module ModelDelegateAttribute
     extend ::ActiveSupport::Concern
-    
+
     module ClassMethods
       def model_delegate_attribute(attribute, default = nil)
         attr_accessor attribute
@@ -22,7 +22,7 @@ module CarrierWave
           model_accessor = model_getter_name(attribute)
           instance_variable_set(var_name, value)
           if self.model.present? && self.model.respond_to?(:"#{model_accessor}=") && !self.model.destroyed?
-            self.model.send(:"#{model_accessor}=", value) 
+            self.model.send(:"#{model_accessor}=", value)
           end
         end
 
@@ -32,7 +32,7 @@ module CarrierWave
         end
       end
     end
-    
+
     module InstanceMethods
       private
       def model_getter_name(attribute)
