@@ -17,12 +17,12 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
-  
+
   s.add_dependency(%q<carrierwave>, [">= 0.5.7"])
-  s.add_dependency(%q<activesupport>, [">= 3.0"])  
+  s.add_dependency(%q<activesupport>, [">= 3.0"])
   s.add_dependency(%q<mime-types>)
   s.add_development_dependency(%q<rspec-rails>, ">= 2.6")
-  s.add_development_dependency(%q<sqlite3-ruby>)    
+  s.add_development_dependency(%q<sqlite3-ruby>)
   s.add_development_dependency(%q<rmagick>)
   s.add_development_dependency(%q<mini_magick>)
   s.add_development_dependency(%q<mime-types>)

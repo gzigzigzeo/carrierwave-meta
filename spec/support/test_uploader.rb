@@ -5,7 +5,7 @@ class TestUploader < CarrierWave::Uploader::Base
     include CarrierWave::RMagick
   end
   include CarrierWave::Meta
-  
+
   def store_dir
     "tmp/store"
   end

@@ -3,7 +3,7 @@ $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 begin
   require "bundler"
   Bundler.setup
-  Bundler.require  
+  Bundler.require
 rescue Bundler::GemNotFound
   raise RuntimeError, "Bundler couldn't find some gems." +
     "Did you run `bundle install`?"
