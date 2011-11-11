@@ -244,7 +244,7 @@ The uploader:
 
 = A note about testing
 
-fschwahn added support for mini-magick. To run tests with mini-magick do:
+@fschwahn added support for mini-magick. To run tests with mini-magick do:
 
   bundle exec rake spec PROCESSOR=mini_magick
 
