@@ -43,8 +43,8 @@ module CarrierWave
       
       private
       def call_store_meta(file = nil)
-        # Re-retrieve metadata for a file only if model is not present.
-        store_meta if self.model.nil?
+        # Re-retrieve metadata for a file only if model is not present OR model is not saved.
+        store_meta if self.model.nil? || (self.model.respond_to?(:new_record?) && self.model.new_record?)
       end
       
       def get_dimensions
