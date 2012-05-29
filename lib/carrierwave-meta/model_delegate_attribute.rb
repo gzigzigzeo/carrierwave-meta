@@ -33,15 +33,13 @@ module CarrierWave
       end
     end
     
-    module InstanceMethods
-      private
-      def model_getter_name(attribute)
-        name = []
-        name << mounted_as if mounted_as.present?
-        name << version_name if version_name.present?
-        name << attribute
-        name.join('_')
-      end
+    private
+    def model_getter_name(attribute)
+      name = []
+      name << mounted_as if mounted_as.present?
+      name << version_name if version_name.present?
+      name << attribute
+      name.join('_')
     end
   end
 end
