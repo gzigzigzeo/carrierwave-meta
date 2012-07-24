@@ -7,7 +7,7 @@ module CarrierWave
       include CarrierWave::MimeTypes
 
       set_content_type(true)
-      
+
       after :retrieve_from_cache, :set_content_type
       after :retrieve_from_cache, :call_store_meta
       after :retrieve_from_store, :set_content_type
@@ -31,21 +31,21 @@ module CarrierWave
         self.height = height
       end
     end
-    
+
     def set_content_type(file = nil)
       set_content_type(true)
     end
-    
+
     def image_size_s
       image_size.join('x')
     end
-    
+
     private
     def call_store_meta(file = nil)
       # Re-retrieve metadata for a file only if model is not present OR model is not saved.
       store_meta if self.model.nil? || (self.model.respond_to?(:new_record?) && self.model.new_record?)
     end
-    
+
     def get_dimensions
       [].tap do |size|
         if self.file.content_type =~ /image/
@@ -57,12 +57,13 @@ module CarrierWave
               size << img["width"]
               size << img["height"]
             else
-              raise "Only RMagick is supported yet. Fork and update it."
-            end        
+              raise "Only RMagick & MiniMagick are supported yet. Fork and update it."
+            end
             img
           end
         end
       end
-    end        
+    rescue CarrierWave::ProcessingError
+    end
   end
 end

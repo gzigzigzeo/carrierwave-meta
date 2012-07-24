@@ -3,7 +3,7 @@ $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 begin
   require "bundler"
   Bundler.setup
-  Bundler.require  
+  Bundler.require
 rescue Bundler::GemNotFound
   raise RuntimeError, "Bundler couldn't find some gems." +
     "Did you run `bundle install`?"
@@ -15,6 +15,7 @@ require 'mime/types'
 require 'carrierwave'
 require 'carrierwave-meta'
 require 'support/test_delegate_uploader'
+require 'support/test_blank_uploader'
 require 'support/test_uploader'
 require 'support/test_model'
 

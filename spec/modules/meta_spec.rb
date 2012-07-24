@@ -5,9 +5,10 @@ describe TestUploader do
   ORIGINAL_SIZE = [600, 277]
   VERSION_SIZE = [200, 200]
 
-  let(:file) { File.open("spec/fixtures/big.jpg") }  
+  let(:file) { File.open("spec/fixtures/big.jpg") }
+  let(:corrupted_file) { File.open("spec/fixtures/corrupted.bmp") }
   let(:file_name) { File.basename(file.path) }
-  let(:obj) { TestModel.new }  
+  let(:obj) { TestModel.new }
 
   def uploader_values_are_correct(uploader)
     uploader.width.should eq(ORIGINAL_SIZE[0])
@@ -22,7 +23,7 @@ describe TestUploader do
     uploader.version.image_size.should eq(VERSION_SIZE)
     uploader.version.content_type.should eq(MIME::Types.type_for(file_name).first.to_s)
     uploader.version.file_size.should_not be_blank
-    uploader.version.image_size_s.should eq(VERSION_SIZE.join('x'))    
+    uploader.version.image_size_s.should eq(VERSION_SIZE.join('x'))
   end
 
   def obj_values_are_correct(obj)
@@ -45,13 +46,13 @@ describe TestUploader do
       uploader.cache!(file)
       uploader_values_are_correct(uploader)
     end
-  
+
     it "stores metadata after store!" do
       uploader = TestUploader.new
       uploader.store!(file)
       uploader_values_are_correct(uploader)
     end
-  
+
     it "has metadata after cache!/retrieve_from_cache!" do
       uploader = TestUploader.new
       uploader.cache!(file)
@@ -61,16 +62,16 @@ describe TestUploader do
       uploader.retrieve_from_cache!(cache_name)
       uploader_values_are_correct(uploader)
     end
-    
+
     it "has metadata after store!/retrieve_from_store!" do
       uploader = TestUploader.new
       uploader.store!(file)
       uploader_values_are_correct(uploader)
-      
+
       uploader = TestUploader.new
       uploader.retrieve_from_store!(File.basename(file.path))
-      uploader_values_are_correct(uploader)      
-    end    
+      uploader_values_are_correct(uploader)
+    end
   end
 
   context "attached uploader" do
@@ -80,14 +81,14 @@ describe TestUploader do
       uploader_values_are_correct(uploader)
       obj_values_are_correct(obj)
     end
-  
+
     it "stores metadata after store!" do
       uploader = TestUploader.new(obj, :image)
       uploader.store!(file)
       uploader_values_are_correct(uploader)
-      obj_values_are_correct(obj)      
+      obj_values_are_correct(obj)
     end
-  
+
     it "has metadata after cache!/retrieve_from_cache!" do
       uploader = TestUploader.new(obj, :image)
       uploader.cache!(file)
@@ -97,15 +98,22 @@ describe TestUploader do
       uploader.retrieve_from_cache!(cache_name)
       uploader_values_are_correct(uploader)
     end
-    
+
     it "has metadata after store!/retrieve_from_store!" do
       uploader = TestUploader.new(obj, :image)
       uploader.store!(file)
       uploader_values_are_correct(uploader)
-      
+
       uploader = TestUploader.new(obj, :image)
       uploader.retrieve_from_store!(File.basename(file.path))
-      uploader_values_are_correct(uploader)      
-    end    
+      uploader_values_are_correct(uploader)
+    end
+  end
+
+  context "when file is corrupted/can not be processed" do
+    it "passes without exceptions" do
+      uploader = TestBlankUploader.new(obj, :image)
+      proc { uploader.store!(corrupted_file) }.should_not raise_error
+    end
   end
 end
