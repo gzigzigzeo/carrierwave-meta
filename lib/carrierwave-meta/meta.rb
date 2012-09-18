@@ -18,6 +18,7 @@ module CarrierWave
       model_delegate_attribute :image_size, []
       model_delegate_attribute :width, 0
       model_delegate_attribute :height, 0
+      model_delegate_attribute :md5sum, ''
     end
 
     def store_meta
@@ -29,6 +30,7 @@ module CarrierWave
         self.image_size = dimensions
         self.width = width
         self.height = height
+        self.md5sum = Digest::MD5.hexdigest(File.read(self.file.path))
       end
     end
 
