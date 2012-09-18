@@ -62,7 +62,7 @@ module CarrierWave
               size << img.dimensions[:x]
               size << img.dimensions[:y]
             else
-              raise "Only RMagick & MiniMagick are supported yet. Fork and update it."
+              raise "Only RMagick, MiniMagick, and ImageSorcery are supported yet. Fork and update it."
             end
             img
           end
