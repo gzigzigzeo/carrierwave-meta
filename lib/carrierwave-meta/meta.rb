@@ -61,6 +61,20 @@ module CarrierWave
             end
             img
           end
+        elsif self.file.content_type =~ /x-shockwave-flash/
+          file_content = self.file.read
+          header=file_content[0...8]
+
+          if /CWS/ =~ header
+            buf= Zlib::Inflate.inflate(file_content[8..-1])
+            header.sub!(/^C/,'F')
+          else
+            buf=file_content
+          end
+
+          is = ::ImageSize.new(header << buf)
+          size << is.w
+          size << is.h
         end
       end
     rescue CarrierWave::ProcessingError

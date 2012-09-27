@@ -18,6 +18,8 @@ require 'support/test_delegate_uploader'
 require 'support/test_blank_uploader'
 require 'support/test_uploader'
 require 'support/test_model'
+require 'zlib'
+require 'image_size'
 
 RSpec.configure do |config|
   config.before do
