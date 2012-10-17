@@ -59,8 +59,8 @@ module CarrierWave
               size << img["width"]
               size << img["height"]
             elsif defined?(::Sorcery) && img.is_a?(::Sorcery)
-              size << img.dimensions[:x]
-              size << img.dimensions[:y]
+              size << img.dimensions[:x].to_i
+              size << img.dimensions[:y].to_i
             else
               raise "Only RMagick, MiniMagick, and ImageSorcery are supported yet. Fork and update it."
             end

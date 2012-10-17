@@ -1,5 +1,7 @@
 = carrierwave-meta
 
+{<img src="https://secure.travis-ci.org/gzigzigzeo/carrierwave-meta.png" alt="Build Status" />}[http://travis-ci.org/gzigzigzeo/carrierwave-meta]
+
 = Installation
 
 Add the following line to your Gemfile:
@@ -246,7 +248,11 @@ The uploader:
 
 @fschwahn added support for mini-magick. To run tests with mini-magick do:
 
-  bundle exec rake spec PROCESSOR=mini_magick
+  PROCESSOR=mini_magick bundle exec rake spec
+
+@skord added support for ImageSorcery. To run specs do:
+
+  PROCESSOR=image_sorcery bundle exec rspec
 
 = TODO
 

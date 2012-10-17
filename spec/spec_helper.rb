@@ -10,10 +10,13 @@ rescue Bundler::GemNotFound
 end
 
 PROCESSOR = (ENV["PROCESSOR"] || :rmagick).to_sym
+puts "Using #{PROCESSOR} processor"
 
+require 'carrierwave-imagesorcery'
 require 'mime/types'
 require 'carrierwave'
 require 'carrierwave-meta'
+require 'support/current_processor'
 require 'support/test_delegate_uploader'
 require 'support/test_blank_uploader'
 require 'support/test_uploader'
