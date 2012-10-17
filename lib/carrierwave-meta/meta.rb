@@ -18,6 +18,7 @@ module CarrierWave
       model_delegate_attribute :image_size, []
       model_delegate_attribute :width, 0
       model_delegate_attribute :height, 0
+      model_delegate_attribute :md5sum, ''
     end
 
     def store_meta
@@ -29,6 +30,7 @@ module CarrierWave
         self.image_size = dimensions
         self.width = width
         self.height = height
+        self.md5sum = Digest::MD5.hexdigest(File.read(self.file.path))
       end
     end
 
@@ -56,8 +58,11 @@ module CarrierWave
             elsif defined?(::MiniMagick::Image) && img.is_a?(::MiniMagick::Image)
               size << img["width"]
               size << img["height"]
+            elsif defined?(::Sorcery) && img.is_a?(::Sorcery)
+              size << img.dimensions[:x]
+              size << img.dimensions[:y]
             else
-              raise "Only RMagick & MiniMagick are supported yet. Fork and update it."
+              raise "Only RMagick, MiniMagick, and ImageSorcery are supported yet. Fork and update it."
             end
             img
           end
