@@ -3,3 +3,5 @@ require 'mime/types'
 require "carrierwave-meta/version"
 require 'carrierwave-meta/model_delegate_attribute'
 require 'carrierwave-meta/meta'
+require 'zlib'
+require 'image_size'
