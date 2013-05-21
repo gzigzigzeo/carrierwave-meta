@@ -35,7 +35,7 @@ module CarrierWave
     end
 
     def set_content_type(file = nil)
-      set_content_type(true)
+      super(true)
     end
 
     def image_size_s
