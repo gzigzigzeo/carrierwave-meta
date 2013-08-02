@@ -1,4 +1,7 @@
 language: ruby
 rvm:
-  - 2.0.0
+  - 2.0
   - 1.9.3
+before_install:
+  - uname -a
+  - sudo apt-get install libvips-dev
