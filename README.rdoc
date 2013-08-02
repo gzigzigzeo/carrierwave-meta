@@ -248,17 +248,15 @@ The uploader:
 
 = PDF/GhostScript support
 
-If you want to use this plugin with PDF/PostScript files than you should:
-
-- Use RMagick as processor for PDF/PostScript uploader.
-- Install GhostScript.
-- Build ImageMagick with GhostScript support.
+If you want to use this plugin with PDF/PostScript files than you should install
+GhostScript and rebuild ImageMagick with GhostScript support:
 
   brew install ghostscript
   brew install imagemagick --with-ghostscript
   gem uninstall rmagick && gem install rmagick
 
-- Switch on ghostscript somewhere in your app's initializer:
+To switch on PDF/EPS processing you should enable GhostScript somewhere in your
+app's initializer:
 
   CarrierWave::Meta.ghostscript_enabled = true
 
