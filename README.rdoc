@@ -1,6 +1,7 @@
 = carrierwave-meta
 
 {<img src="https://secure.travis-ci.org/gzigzigzeo/carrierwave-meta.png" alt="Build Status" />}[http://travis-ci.org/gzigzigzeo/carrierwave-meta]
+{<img src="https://codeclimate.com/github/gzigzigzeo/carrierwave-meta.png" />}[https://codeclimate.com/github/gzigzigzeo/carrierwave-meta]
 
 = Installation
 
