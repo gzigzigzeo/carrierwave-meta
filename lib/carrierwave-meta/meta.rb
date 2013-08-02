@@ -45,7 +45,9 @@ module CarrierWave
     private
     def call_store_meta(file = nil)
       # Re-retrieve metadata for a file only if model is not present OR model is not saved.
-      store_meta if self.model.nil? || (self.model.respond_to?(:new_record?) && self.model.new_record?)
+      if model.nil? || (model.respond_to?(:new_record?) && model.new_record?)
+        store_meta
+      end
     end
 
     def get_dimensions
@@ -56,8 +58,8 @@ module CarrierWave
               size << img.columns
               size << img.rows
             elsif defined?(::MiniMagick::Image) && img.is_a?(::MiniMagick::Image)
-              size << img["width"]
-              size << img["height"]
+              size << img['width']
+              size << img['height']
             elsif defined?(::Sorcery) && img.is_a?(::Sorcery)
               size << img.dimensions[:x].to_i
               size << img.dimensions[:y].to_i

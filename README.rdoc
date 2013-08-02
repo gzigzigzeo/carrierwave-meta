@@ -7,61 +7,74 @@
 Add the following line to your Gemfile:
   gem 'carrierwave-meta'
 
+= PDF/GhostScript support
+
+If you want to use plugin with PDF/PostScript files than you should:
+
+1. Use RMagick as processor for PDF/PostScript uploader.
+1. Install GhostScript.
+1. Build ImageMagick with GhostScript support.
+
+  brew install ghostscript
+  brew install imagemagick --with-ghostscript
+  gem uninstall rmagick && gem install rmagick
+
 = Usage example
 
   class TestUploader < CarrierWave::Uploader::Base
     include CarrierWave::RMagick
     include CarrierWave::Meta
-  
+
     storage :file
 
     process :store_meta
+
     version :version do
       process :resize_to_fill => [200, 200]
       process :store_meta
     end
   end
-  
+
   file = File.open('test.jpg') # JPEG 500x300, 20000 bytes
   uploader = TestUploader.new
   uploader.store!(file)
-  
+
   uploader.width        # 500
   uploader.height       # 300
   uploader.image_size   # [500, 300]
   uploader.file_zie     # 20000
   uploader.content_type # "image/jpeg"
-  
+
   uploader.version.width        # 200
-  uploader.version.height       # 200  
-  uploader.version.image_size   # [200, 200]  
+  uploader.version.height       # 200
+  uploader.version.image_size   # [200, 200]
   uploader.version.file_zie     # less than 20000
   uploader.version.content_type # "image/jpeg"
 
 = Saving values to database
 
-Simply create database columns to hold metadata in your model's table. Currently gem supports width, height, 
+Simply create database columns to hold metadata in your model's table. Currently gem supports width, height,
 image_size ([width, height]), content_type and file_size fields. Versions are supported too.
 
   class TestModel
-    attr_accessor :image_width  
+    attr_accessor :image_width
     attr_accessor :image_height
-    attr_accessor :image_image_size  
+    attr_accessor :image_image_size
     attr_accessor :image_content_type
     attr_accessor :image_file_size
 
-    attr_accessor :image_version_width  
+    attr_accessor :image_version_width
     attr_accessor :image_version_height
     attr_accessor :image_version_image_size
     attr_accessor :image_version_content_type
-    attr_accessor :image_version_file_size  
+    attr_accessor :image_version_file_size
   end
 
   file = File.open('test.jpg')
   model = TestModel.new
   uploader = TestUploader.new(model, :image)
   uploader.store!(file)
-  
+
   uploader.width      # 500
   model.image_width   # 500
   model.image_height  # 300
@@ -88,19 +101,19 @@ Used to synchronize data between uploader and mounted model instance. Model's in
     attr_accessor :a_processed
     attr_accessor :a_b_processed
   end
-  
+
   class DelegateTestUploader < CarrierWave::Uploader::Base
     model_delegate_attribute :uploaded
-  
+
     set_processed
-  
+
     version :a do
       set_processed
       version :b do
         set_processed
       end
     end
-  
+
     def set_processed
       self.processed = true
     end
@@ -109,15 +122,15 @@ Used to synchronize data between uploader and mounted model instance. Model's in
   model = DelegateTestModel.new
   uploader = DelegateTestUploader.new(model, :image)
   file = File.open('test.jpg')
-  
+
   uploader.store!(file)
-  
+
   model.processed     # true
-  model.a_processed   # true  
+  model.a_processed   # true
   model.a_b_processed # true
-  
+
   model.a_processed = false
-  
+
   uploader.processed     # true
   uploader.a_processed   # false
   uploader.a_b_processed # true
@@ -145,7 +158,7 @@ The uploader:
     version :crop_source do
       process :resize_to_fit => [300, 300]
       process :store_meta
-    
+
       # This is the cropped version of parent image. Let crop to 50x50 square.
       version :crop do
         process :crop_to => [50, 50]
@@ -153,7 +166,7 @@ The uploader:
     end
 
     # Defines crop area dimensions.
-    # This should be assigned before #store! and #cache! called and should be saved in the model's instance. 
+    # This should be assigned before #store! and #cache! called and should be saved in the model's instance.
     # Otherwise cropped image would be lost after #recreate_versions! is called.
     # If crop area dimensions are'nt assigned, uploader calculates crop area dimensions inside the
     # parent image and creates the default image.
@@ -179,13 +192,13 @@ The uploader:
         cropped_img = img.crop(x, y, width, height)
         new_img = cropped_img.resize_to_fill(new_width, new_height)
         destroy_image(cropped_img)
-        destroy_image(img)      
+        destroy_image(img)
         new_img
       end
     end
 
     # Creates the default crop image.
-    # Here the original crop area dimensions are restored and assigned to the model's instance.  
+    # Here the original crop area dimensions are restored and assigned to the model's instance.
     def resize_to_fill_and_save_dimensions(new_width, new_height)
       manipulate! do |img|
         width, height = img.columns, img.rows
@@ -196,20 +209,20 @@ The uploader:
         h_ratio = height.to_f / new_height.to_f
 
         ratio = [w_ratio, h_ratio].min
-      
+
         self.w = ratio * new_width
         self.h = ratio * new_height
         self.x = (width - self.w) / 2
         self.y = (height - self.h) / 2
-            
+
         new_img
       end
     end
-    
+
     private
     def crop_args
       %w(x y w h).map { |accessor| send(accessor).to_i }
-    end    
+    end
   end
 
   # Post should have :crop_source_version_x, :crop_source_version_y, :crop_source_version_h, :crop_source_version_w columns
@@ -223,14 +236,14 @@ The uploader:
   post.save!
 
   post.image.crop_source.width  # 300
-  post.image.crop_source.height # 200  
+  post.image.crop_source.height # 200
   post.image.crop_source.crop.width  # 50
   post.image.crop_source.crop.height # 50
-  
+
   # Default crop area coordinates within the limits of big image dimensions: square at the center of an image
   post.image.crop_source.crop.x # 50
   post.image.crop_source.crop.y # 50
-  post.image.crop_source.crop.w # 200 
+  post.image.crop_source.crop.w # 200
   post.image.crop_source.crop.h # 200
 
   # Let user change the crop area with JCrop script. Pass new crop area parameters to the model.
@@ -240,7 +253,7 @@ The uploader:
   post.crop_source_crop_h = 100
 
   post.save! # Crop image is reprocessed
-  
+
   post.image.crop_source.crop.width  # 50
   post.image.crop_source.crop.height # 50
 
@@ -253,6 +266,8 @@ The uploader:
 @skord added support for ImageSorcery. To run specs do:
 
   PROCESSOR=image_sorcery bundle exec rspec
+
+@SergeyKishenin added support for EPS/GhostScript files.
 
 = TODO
 
