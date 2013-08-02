@@ -12,7 +12,10 @@ end
 PROCESSOR = (ENV["PROCESSOR"] || :rmagick).to_sym
 puts "Using #{PROCESSOR} processor"
 
-require 'carrierwave-imagesorcery'
+unless ENV['PDF_EPS'] == 'false'
+  CarrierWave::Meta.ghostscript_enabled = true
+end
+
 require 'mime/types'
 require 'carrierwave'
 require 'carrierwave-meta'

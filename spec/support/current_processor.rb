@@ -3,10 +3,14 @@ module CurrentProcessor
 
   included do
     case PROCESSOR
+    when :image_sorcery
+      require 'carrierwave-imagesorcery'
+      include CarrierWave::ImageSorcery
+    when :vips
+      require 'carrierwave-vips'
+      include CarrierWave::Vips
     when :mini_magick
       include CarrierWave::MiniMagick
-    when :image_sorcery
-      include CarrierWave::ImageSorcery
     else
       include CarrierWave::RMagick
     end

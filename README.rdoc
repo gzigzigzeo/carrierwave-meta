@@ -8,18 +8,6 @@
 Add the following line to your Gemfile:
   gem 'carrierwave-meta'
 
-= PDF/GhostScript support
-
-If you want to use plugin with PDF/PostScript files than you should:
-
-- Use RMagick as processor for PDF/PostScript uploader.
-- Install GhostScript.
-- Build ImageMagick with GhostScript support.
-
-  brew install ghostscript
-  brew install imagemagick --with-ghostscript
-  gem uninstall rmagick && gem install rmagick
-
 = Usage example
 
   class TestUploader < CarrierWave::Uploader::Base
@@ -258,15 +246,33 @@ The uploader:
   post.image.crop_source.crop.width  # 50
   post.image.crop_source.crop.height # 50
 
+= PDF/GhostScript support
+
+If you want to use this plugin with PDF/PostScript files than you should:
+
+- Use RMagick as processor for PDF/PostScript uploader.
+- Install GhostScript.
+- Build ImageMagick with GhostScript support.
+
+  brew install ghostscript
+  brew install imagemagick --with-ghostscript
+  gem uninstall rmagick && gem install rmagick
+
+- Switch on ghostscript somewhere in your app's initializer:
+
+  CarrierWave::Meta.ghostscript_enabled = true
+
 = A note about testing
 
-@SergeyKishenin added specs for EPS/GhostScript files. THey run for image_magick
+@SergeyKishenin added specs for EPS/GhostScript files. They run for image_magick
 or mini_magick processor by default. To make specs work please install
-GhostScript as described above.
+GhostScript as described above. To run specs WITHOUT PDF/EPS do:
+
+  PDF_EPS=false bundle exec rspec
 
 @fschwahn added support for mini-magick. To run tests with mini-magick do:
 
-  PROCESSOR=mini_magick bundle exec rake spec
+  PROCESSOR=mini_magick bundle exec rspec
 
 @skord added support for ImageSorcery. To run specs do:
 

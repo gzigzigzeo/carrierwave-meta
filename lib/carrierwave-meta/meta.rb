@@ -2,6 +2,9 @@ module CarrierWave
   module Meta
     extend ActiveSupport::Concern
 
+    mattr_accessor :ghostscript_enabled
+    self.ghostscript_enabled = false
+
     included do
       include CarrierWave::ModelDelegateAttribute
       include CarrierWave::MimeTypes
@@ -52,22 +55,27 @@ module CarrierWave
 
     def get_dimensions
       [].tap do |size|
-        if self.file.content_type =~ /image|postscript|pdf/
-          manipulate! do |img|
-            if defined?(::Magick::Image) && img.is_a?(::Magick::Image)
-              size << img.columns
-              size << img.rows
-            elsif defined?(::MiniMagick::Image) && img.is_a?(::MiniMagick::Image)
-              size << img['width']
-              size << img['height']
-            elsif defined?(::Sorcery) && img.is_a?(::Sorcery)
-              size << img.dimensions[:x].to_i
-              size << img.dimensions[:y].to_i
-            else
-              raise "Only RMagick, MiniMagick, and ImageSorcery are supported yet. Fork and update it."
-            end
-            img
+        is_image = self.file.content_type =~ /image/
+        is_pdf = self.file.content_type =~ /postscript|pdf/ && CarrierWave::Meta.ghostscript_enabled
+        is_dimensionable = is_image || is_pdf
+
+        manipulate! do |img|
+          if defined?(::Magick::Image) && img.is_a?(::Magick::Image) && is_dimensionable
+            size << img.columns
+            size << img.rows
+          elsif defined?(::MiniMagick::Image) && img.is_a?(::MiniMagick::Image) && is_dimensionable
+            size << img['width']
+            size << img['height']
+          elsif defined?(::Sorcery) && img.is_a?(::Sorcery) && is_image
+            size << img.dimensions[:x].to_i
+            size << img.dimensions[:y].to_i
+          elsif defined?(::VIPS::Image) && img.is_a?(::VIPS::Image) && is_image
+            size << img.x_size
+            size << img.y_size
+          else
+            raise "Unsupported file type/image processor (use RMagick, MiniMagick, ImageSorcery, VIPS)"
           end
+          img
         end
       end
     rescue CarrierWave::ProcessingError

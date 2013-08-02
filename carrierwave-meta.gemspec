@@ -27,4 +27,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency(%q<mini_magick>)
   s.add_development_dependency(%q<mime-types>)
   s.add_development_dependency(%q<carrierwave-imagesorcery>)
+  s.add_development_dependency(%q<carrierwave-vips>)
 end
