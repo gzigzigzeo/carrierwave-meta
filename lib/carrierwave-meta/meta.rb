@@ -56,20 +56,28 @@ module CarrierWave
     def get_dimensions
       [].tap do |size|
         is_image = self.file.content_type =~ /image/
-        is_pdf = self.file.content_type =~ /postscript|pdf/ && CarrierWave::Meta.ghostscript_enabled
+        is_pdf =
+          self.file.content_type =~ /postscript|pdf/ &&
+          CarrierWave::Meta.ghostscript_enabled
+
         is_dimensionable = is_image || is_pdf
 
         manipulate! do |img|
-          if defined?(::Magick::Image) && img.is_a?(::Magick::Image) && is_dimensionable
+          rmagick = defined?(::Magick::Image) && img.is_a?(::Magick::Image)
+          mini_magick = defined?(::MiniMagick::Image) && img.is_a?(::MiniMagick::Image)
+          socrecy = defined?(::Sorcery) && img.is_a?(::Sorcery)
+          vips = defined?(::VIPS::Image) && img.is_a?(::VIPS::Image)
+
+          if rmagick && is_dimensionable
             size << img.columns
             size << img.rows
-          elsif defined?(::MiniMagick::Image) && img.is_a?(::MiniMagick::Image) && is_dimensionable
+          elsif mini_magick && is_dimensionable
             size << img['width']
             size << img['height']
-          elsif defined?(::Sorcery) && img.is_a?(::Sorcery) && is_image
+          elsif socrecy && is_image
             size << img.dimensions[:x].to_i
             size << img.dimensions[:y].to_i
-          elsif defined?(::VIPS::Image) && img.is_a?(::VIPS::Image) && is_image
+          elsif vips && is_image
             size << img.x_size
             size << img.y_size
           else

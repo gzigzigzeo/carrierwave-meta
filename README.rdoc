@@ -276,6 +276,10 @@ GhostScript as described above. To run specs WITHOUT PDF/EPS do:
 
   PROCESSOR=image_sorcery bundle exec rspec
 
+To run specs against VIPS processor do:
+
+  PROCESSOR=vips bundle exec rspec
+
 = TODO
 
 1. I do not know how it would work with S3 and other remote storages. Should be tested.
