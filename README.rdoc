@@ -11,9 +11,9 @@ Add the following line to your Gemfile:
 
 If you want to use plugin with PDF/PostScript files than you should:
 
-1. Use RMagick as processor for PDF/PostScript uploader.
-1. Install GhostScript.
-1. Build ImageMagick with GhostScript support.
+- Use RMagick as processor for PDF/PostScript uploader.
+- Install GhostScript.
+- Build ImageMagick with GhostScript support.
 
   brew install ghostscript
   brew install imagemagick --with-ghostscript
@@ -259,6 +259,10 @@ The uploader:
 
 = A note about testing
 
+@SergeyKishenin added specs for EPS/GhostScript files. THey run for image_magick
+or mini_magick processor by default. To make specs work please install
+GhostScript as described above.
+
 @fschwahn added support for mini-magick. To run tests with mini-magick do:
 
   PROCESSOR=mini_magick bundle exec rake spec
@@ -267,11 +271,9 @@ The uploader:
 
   PROCESSOR=image_sorcery bundle exec rspec
 
-@SergeyKishenin added support for EPS/GhostScript files.
-
 = TODO
 
 1. I do not know how it would work with S3 and other remote storages. Should be tested.
 2. Write integration guide for JCrop.
 3. A notice about content-type.
-4. Improve my english skills.
+
