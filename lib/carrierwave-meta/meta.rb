@@ -63,21 +63,16 @@ module CarrierWave
         is_dimensionable = is_image || is_pdf
 
         manipulate! do |img|
-          rmagick = defined?(::Magick::Image) && img.is_a?(::Magick::Image)
-          mini_magick = defined?(::MiniMagick::Image) && img.is_a?(::MiniMagick::Image)
-          socrecy = defined?(::ImageSorcery) && img.is_a?(::ImageSorcery)
-          vips = defined?(::VIPS::Image) && img.is_a?(::VIPS::Image)
-
-          if rmagick && is_dimensionable
+          if processor?(:rmagick, img) && is_dimensionable
             size << img.columns
             size << img.rows
-          elsif mini_magick && is_dimensionable
+          elsif processor?(:mini_magick, img) && is_dimensionable
             size << img['width']
             size << img['height']
-          elsif socrecy && is_image
+          elsif processor?(:socrecy, img) && is_image
             size << img.dimensions[:x].to_i
             size << img.dimensions[:y].to_i
-          elsif vips && is_image
+          elsif processor?(:vips, img) && is_image
             size << img.x_size
             size << img.y_size
           else
@@ -88,5 +83,17 @@ module CarrierWave
       end
     rescue CarrierWave::ProcessingError
     end
+
+    def processor?(processor, img)
+      processor = PROCESSORS[processor]
+      defined?(processor.constantize) && img.is_a?(processor.constantize)
+    end
+
+    PROCESSORS = {
+      rmagick: 'Magick::Image',
+      mini_magick: 'MiniMagick::Image',
+      socrecy: 'ImageSorcery',
+      vips: 'Vips::Image'
+    }
   end
 end
