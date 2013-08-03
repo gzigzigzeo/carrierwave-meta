@@ -55,9 +55,9 @@ module CarrierWave
 
     def get_dimensions
       [].tap do |size|
-        is_image = self.file.content_type =~ /image/
+        is_image = file.content_type =~ /image/
         is_pdf =
-          self.file.content_type =~ /postscript|pdf/ &&
+          file.content_type =~ /postscript|pdf/ &&
           CarrierWave::Meta.ghostscript_enabled
 
         is_dimensionable = is_image || is_pdf
