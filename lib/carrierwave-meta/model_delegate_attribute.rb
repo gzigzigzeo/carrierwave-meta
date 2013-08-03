@@ -10,24 +10,34 @@ module CarrierWave
 
         var_name = :"@#{attribute}"
 
+        define_getter(attribute, var_name, default)
+        define_setter(attribute, var_name, default)
+        define_reset(attribute, default)
+      end
+
+      private
+      def define_getter(attribute, var_name, default)
         define_method :"#{attribute}" do
           model_accessor = model_getter_name(attribute)
           value = instance_variable_get(var_name)
-          value ||= self.model.send(model_accessor) if self.model.present? && self.model.respond_to?(model_accessor)
+          value ||= model.send(model_accessor) if model.present? && model.respond_to?(model_accessor)
           value ||= default
           instance_variable_set(var_name, value)
         end
+      end
 
+      def define_setter(attribute, var_name, default)
         define_method :"#{attribute}=" do |value|
           model_accessor = model_getter_name(attribute)
           instance_variable_set(var_name, value)
-          if self.model.present? && self.model.respond_to?(:"#{model_accessor}=") && !self.model.destroyed?
-            self.model.send(:"#{model_accessor}=", value)
+          if model.present? && model.respond_to?(:"#{model_accessor}=") && !model.destroyed?
+            model.send(:"#{model_accessor}=", value)
           end
         end
+      end
 
+      def define_reset(attribute, default)
         define_method :"reset_#{attribute}" do
-          self.send(:"#{attribute}=", default)
           send(:"#{attribute}=", default)
         end
       end
