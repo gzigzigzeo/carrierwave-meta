@@ -31,7 +31,7 @@ Add the following line to your Gemfile:
   uploader.width        # 500
   uploader.height       # 300
   uploader.image_size   # [500, 300]
-  uploader.file_zie     # 20000
+  uploader.file_size    # 20000
   uploader.content_type # "image/jpeg"
 
   uploader.version.width        # 200
@@ -43,7 +43,7 @@ Add the following line to your Gemfile:
 = Saving values to database
 
 Simply create database columns to hold metadata in your model's table. Currently gem supports width, height,
-image_size ([width, height]), content_type and file_size fields. Versions are supported too.
+image_size ([width, height]), content_type, file_size and MD5 fields. Versions are supported too.
 
   class TestModel
     attr_accessor :image_width

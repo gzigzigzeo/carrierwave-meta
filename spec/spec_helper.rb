@@ -12,7 +12,8 @@ end
 PROCESSOR = (ENV["PROCESSOR"] || :rmagick).to_sym
 puts "Using #{PROCESSOR} processor"
 
-unless ENV['PDF_EPS'] == 'false'
+PDF_EPS = ENV['PDF_EPS']
+unless PDF_EPS == 'false' or [:vips, :image_sorcery].include?(PROCESSOR)
   CarrierWave::Meta.ghostscript_enabled = true
 end
 

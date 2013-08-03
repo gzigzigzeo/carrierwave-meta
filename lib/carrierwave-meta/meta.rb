@@ -65,7 +65,7 @@ module CarrierWave
         manipulate! do |img|
           rmagick = defined?(::Magick::Image) && img.is_a?(::Magick::Image)
           mini_magick = defined?(::MiniMagick::Image) && img.is_a?(::MiniMagick::Image)
-          socrecy = defined?(::Sorcery) && img.is_a?(::Sorcery)
+          socrecy = defined?(::ImageSorcery) && img.is_a?(::ImageSorcery)
           vips = defined?(::VIPS::Image) && img.is_a?(::VIPS::Image)
 
           if rmagick && is_dimensionable
