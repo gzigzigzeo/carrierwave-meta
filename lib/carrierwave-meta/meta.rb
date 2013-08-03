@@ -86,7 +86,8 @@ module CarrierWave
 
     def processor?(processor, img)
       processor = PROCESSORS[processor]
-      defined?(processor.constantize) && img.is_a?(processor.constantize)
+      processor_class = processor.constantize rescue nil
+      defined?(processor_class) && img.is_a?(processor_class)
     end
 
     PROCESSORS = {
