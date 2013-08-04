@@ -30,4 +30,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency(%q<carrierwave-vips>)
   s.add_development_dependency(%q<fog>, '~> 1.3.1')
   s.add_development_dependency(%q<simplecov>)
+  s.add_development_dependency(%q<activerecord>, '>= 3.0')
 end

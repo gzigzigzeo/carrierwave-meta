@@ -5,8 +5,11 @@ require 'bundler/setup'
 require 'simplecov'
 require 'mime/types'
 require 'carrierwave'
+require 'carrierwave/orm/activerecord'
 require 'support/remote'
 require 'support/current_processor'
+require 'active_record'
+require 'support/schema'
 
 SimpleCov.start
 
@@ -24,15 +27,8 @@ require 'support/test_delegate_uploader'
 require 'support/test_blank_uploader'
 require 'support/test_uploader'
 require 'support/test_model'
+require 'support/test_composed_model'
 require 'fog'
-
-=begin
-class CarrierWave::Storage::Fog::File
-  def original_filename
-    ::File.basename(path)
-  end
-end
-=end
 
 RSpec.configure do |config|
   config.before do

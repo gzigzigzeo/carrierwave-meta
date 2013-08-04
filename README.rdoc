@@ -14,10 +14,7 @@ Add the following line to your Gemfile:
     include CarrierWave::RMagick
     include CarrierWave::Meta
 
-    storage :file
-
     process :store_meta => [{md5sum: true}]
-
     version :version do
       process :resize_to_fill => [200, 200]
       process :store_meta
@@ -44,8 +41,9 @@ Add the following line to your Gemfile:
 
 = Saving values to database
 
-Simply create database columns to hold metadata in your model's table. Currently gem supports width, height,
-image_size ([width, height]), content_type, file_size and MD5 fields. Versions are supported too.
+Simply create database columns to hold metadata in your model's table. Currently
+gem supports width, height, image_size ([width, height]), content_type,
+file_size and MD5 fields. Versions are supported too.
 
   class TestModel
     attr_accessor :image_width
@@ -53,12 +51,14 @@ image_size ([width, height]), content_type, file_size and MD5 fields. Versions a
     attr_accessor :image_image_size
     attr_accessor :image_content_type
     attr_accessor :image_file_size
+    attr_accessor :image_md5sum
 
     attr_accessor :image_version_width
     attr_accessor :image_version_height
     attr_accessor :image_version_image_size
     attr_accessor :image_version_content_type
     attr_accessor :image_version_file_size
+    attr_accessor :image_version_md5sum
   end
 
   file = File.open('test.jpg')
@@ -73,19 +73,49 @@ image_size ([width, height]), content_type, file_size and MD5 fields. Versions a
 
 When columns are available in the model instance, metadata is stored in that columns.
 
+= Saving values in the single column
+
+For now, works only for ActiveRecord.
+
+  ```ruby
+  class TestModel < ActiveRecord::Base
+    extend CarrierWave::Meta::ActiveRecord
+
+    mount_uploader :image, TestUploader
+    serialize :image_meta, OpenStruct
+    carrierwave_meta_composed :image_meta,
+      :image, image_version: [:width, :height, :md5sum]
+  end
+
+  model = TestModel.new
+  model.image.store!('test.jpg')
+  model.image_width         # 200
+  model.image_version_width # 200
+  model.image_meta          # {image_width: 200, image_height: 200, ...}
+  ```
+
+All you need is image_meta column, all other attributes are virtual. Note
+that carrierwave_meta_composed should be called after mounting uploader.
+
 = Behind the scenes
 
-After the file is retrieved from store or cache metadata is recalculated unless uploader has attached
-model instance. If uploader has attached model instance values are read from that instance.
+After the file is retrieved from store or cache metadata is recalculated
+unless uploader has attached model instance. If uploader has attached
+model instance values are read from that instance.
 
   uploader = TestUploader.new
   uploader.retrieve_from_store!('test.jpg')
-
   uploader.version.width # 200
+
+  model = TestModel.new
+  model.image.store!('test.jpg')
+  model.image_width # 200
+  model.image.width # 200, actually read from image_width
 
 = model_delegate_attribute
 
-Used to synchronize data between uploader and mounted model instance. Model's instance is used like value cache.
+Is used to synchronize data between uploader and mounted model instance.
+Model's instance is used like value cache.
 
   class DelegateTestModel
     attr_accessor :processed
@@ -128,8 +158,10 @@ Used to synchronize data between uploader and mounted model instance. Model's in
 
 When model is mounted to uploader:
 
-1. If attribute is assigned inside uploader then corresponding property in model is also assigned.
-2. If attribute is retrieved from uploader instance first checks that value is defined in model and returns it. Otherwise returns uploader's instance variable.
+1. If attribute is assigned inside uploader then corresponding property
+in model is also assigned.
+2. If attribute is retrieved from uploader, uploader checks that value is
+defined in model and returns it. Otherwise returns uploader's instance variable.
 3. If file is deleted, value becomes nil.
 
 Otherwise acts as regular uploader's instance variables.
