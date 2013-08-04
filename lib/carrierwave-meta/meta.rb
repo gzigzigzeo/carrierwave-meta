@@ -87,14 +87,14 @@ module CarrierWave
     def processor?(processor, img)
       processor = PROCESSORS[processor]
       processor_class = processor.constantize rescue nil
-      defined?(processor_class) && img.is_a?(processor_class)
+      processor_class.present? && img.is_a?(processor_class)
     end
 
     PROCESSORS = {
       rmagick: 'Magick::Image',
       mini_magick: 'MiniMagick::Image',
       socrecy: 'ImageSorcery',
-      vips: 'Vips::Image'
+      vips: 'VIPS::Image'
     }
   end
 end
