@@ -75,9 +75,8 @@ When columns are available in the model instance, metadata is stored in that col
 
 = Saving values into single column
 
-For now, works only for ActiveRecord.
+For now, works only with ActiveRecord.
 
-```ruby
   class TestModel < ActiveRecord::Base
     extend CarrierWave::Meta::ActiveRecord
 
@@ -92,7 +91,6 @@ For now, works only for ActiveRecord.
   model.image_width         # 200
   model.image_version_width # 200
   model.image_meta          # {image_width: 200, image_height: 200, ...}
-```
 
 All you need is image_meta column, all other attributes are virtual. Note
 that carrierwave_meta_composed should be called after mounting uploader.
