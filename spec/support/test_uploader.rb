@@ -10,7 +10,7 @@ class TestUploader < CarrierWave::Uploader::Base
     "tmp/cache"
   end
 
-  storage :file
+  storage current_storage
 
   process :store_meta
   version :version do

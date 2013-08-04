@@ -28,4 +28,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency(%q<mime-types>)
   s.add_development_dependency(%q<carrierwave-imagesorcery>)
   s.add_development_dependency(%q<carrierwave-vips>)
+  s.add_development_dependency(%q<fog>, '~> 1.3.1')
 end

@@ -19,12 +19,14 @@ end
 
 require 'mime/types'
 require 'carrierwave'
+require 'support/remote'
 require 'carrierwave-meta'
 require 'support/current_processor'
 require 'support/test_delegate_uploader'
 require 'support/test_blank_uploader'
 require 'support/test_uploader'
 require 'support/test_model'
+require 'fog'
 
 RSpec.configure do |config|
   config.before do
