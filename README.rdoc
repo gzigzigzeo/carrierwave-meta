@@ -16,7 +16,7 @@ Add the following line to your Gemfile:
 
     storage :file
 
-    process :store_meta
+    process :store_meta => [{md5sum: true}]
 
     version :version do
       process :resize_to_fill => [200, 200]
@@ -33,12 +33,14 @@ Add the following line to your Gemfile:
   uploader.image_size   # [500, 300]
   uploader.file_size    # 20000
   uploader.content_type # "image/jpeg"
+  uploader.md5sum       # "fuuaasdfasdf...."
 
   uploader.version.width        # 200
   uploader.version.height       # 200
   uploader.version.image_size   # [200, 200]
   uploader.version.file_zie     # less than 20000
   uploader.version.content_type # "image/jpeg"
+  uploader.version.md5sum       # nil
 
 = Saving values to database
 

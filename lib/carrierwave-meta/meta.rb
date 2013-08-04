@@ -24,7 +24,7 @@ module CarrierWave
       model_delegate_attribute :md5sum, ''
     end
 
-    def store_meta
+    def store_meta(options = {})
       if self.file.present?
         dimensions = get_dimensions
         width, height = dimensions
@@ -33,12 +33,10 @@ module CarrierWave
         self.image_size = dimensions
         self.width = width
         self.height = height
-        self.md5sum = Digest::MD5.hexdigest(File.read(self.file.path))
+        if options[:md5sum]
+          self.md5sum = Digest::MD5.hexdigest(File.read(self.file.path))
+        end
       end
-    end
-
-    def set_content_type(file = nil)
-      super(true)
     end
 
     def image_size_s
@@ -47,9 +45,14 @@ module CarrierWave
 
     private
     def call_store_meta(file = nil)
-      # Re-retrieve metadata for a file only if model is not present OR model is not saved.
+      # Re-retrieve metadata for a file only if model is not present OR
+      # model is not saved.
       if model.nil? || (model.respond_to?(:new_record?) && model.new_record?)
-        store_meta
+        processor_options = processors.
+          find { |p| p.first == :store_meta }.
+          try(:[], 1)
+
+        store_meta(*processor_options)
       end
     end
 

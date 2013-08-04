@@ -1,13 +1,16 @@
 $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 
-begin
-  require "bundler"
-  Bundler.setup
-  Bundler.require
-rescue Bundler::GemNotFound
-  raise RuntimeError, "Bundler couldn't find some gems." +
-    "Did you run `bundle install`?"
-end
+require 'rubygems'
+require 'bundler/setup'
+require 'simplecov'
+require 'mime/types'
+require 'carrierwave'
+require 'support/remote'
+require 'support/current_processor'
+
+SimpleCov.start
+
+require 'carrierwave-meta'
 
 PROCESSOR = (ENV["PROCESSOR"] || :rmagick).to_sym
 puts "Using #{PROCESSOR} processor"
@@ -17,11 +20,6 @@ unless PDF_EPS == 'false' or [:vips, :image_sorcery].include?(PROCESSOR)
   CarrierWave::Meta.ghostscript_enabled = true
 end
 
-require 'mime/types'
-require 'carrierwave'
-require 'support/remote'
-require 'carrierwave-meta'
-require 'support/current_processor'
 require 'support/test_delegate_uploader'
 require 'support/test_blank_uploader'
 require 'support/test_uploader'

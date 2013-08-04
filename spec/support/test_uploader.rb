@@ -10,7 +10,7 @@ class TestUploader < CarrierWave::Uploader::Base
     "tmp/cache"
   end
 
-  process :store_meta
+  process :store_meta => [{md5sum: true}]
   version :version do
     process :resize_to_fill => [200, 200]
     process :store_meta

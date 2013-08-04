@@ -56,11 +56,14 @@ describe TestUploader do
   def uploader_values_eq(uploader, args)
     obj_values_eq(uploader, :original_size, args)
     obj_values_eq(uploader.version, :version_size, args)
+    uploader.md5sum.should_not be_blank
+    uploader.version.md5sum.should be_blank
   end
 
   def model_values_eq(model, args)
     obj_values_eq(model, :original_size, args, 'image')
     obj_values_eq(model, :version_size, args, 'image_version')
+    model.image_md5sum.should_not be_blank
   end
 
   FORMATS.each do |format, args|
