@@ -11,8 +11,6 @@ class TestDelegateUploader < CarrierWave::Uploader::Base
     :dimensions => []
   }
 
-  storage current_storage
-
   def store_dir
     "tmp/store"
   end

@@ -18,9 +18,10 @@ if ENV['REMOTE'] == 'true'
     config.fog_directory   = 'dev-bucket'
     config.fog_public     = true
     config.fog_attributes = {'Cache-Control'=>'max-age=315576000'}
+    config.storage        = :fog
   end
-end
-
-def current_storage
-  Fog.credentials.empty? ? :file : :fog
+else
+  CarrierWave.configure do |config|
+    config.storage = :file
+  end
 end

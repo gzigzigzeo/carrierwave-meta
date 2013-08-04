@@ -10,8 +10,6 @@ class TestUploader < CarrierWave::Uploader::Base
     "tmp/cache"
   end
 
-  storage current_storage
-
   process :store_meta
   version :version do
     process :resize_to_fill => [200, 200]

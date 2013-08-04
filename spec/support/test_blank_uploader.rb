@@ -10,6 +10,5 @@ class TestBlankUploader < CarrierWave::Uploader::Base
     "tmp/cache"
   end
 
-  storage current_storage
   process :store_meta
 end
