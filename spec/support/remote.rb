@@ -1,4 +1,4 @@
-if ENV['REMOTE'] == 'true'
+if ENV['STORAGE'] == 'fog'
   Fog.mock!
 
   Fog.credentials = {

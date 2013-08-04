@@ -28,6 +28,14 @@ require 'support/test_uploader'
 require 'support/test_model'
 require 'fog'
 
+=begin
+class CarrierWave::Storage::Fog::File
+  def original_filename
+    ::File.basename(path)
+  end
+end
+=end
+
 RSpec.configure do |config|
   config.before do
     FileUtils.rm_rf('tmp')

@@ -282,7 +282,7 @@ To run specs against VIPS processor do:
 
 To run specs against with Fog (Amazon S3) simulation:
 
-  REMOTE=true bundle exec rspec
+  STORAGE=fog bundle exec rspec
 
 = TODO
 
