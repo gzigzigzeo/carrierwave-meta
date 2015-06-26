@@ -96,7 +96,7 @@ module CarrierWave
     PROCESSORS = {
       rmagick: 'Magick::Image',
       mini_magick: 'MiniMagick::Image',
-      socrecy: 'ImageSorcery',
+      sorcery: 'ImageSorcery',
       vips: 'VIPS::Image'
     }
   end
