@@ -65,6 +65,7 @@ module CarrierWave
 
         is_dimensionable = is_image || is_pdf
 
+
         manipulate! do |img|
           if processor?(:rmagick, img) && is_dimensionable
             size << img.columns

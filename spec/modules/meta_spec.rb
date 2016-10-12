@@ -5,6 +5,7 @@ describe TestUploader do
   let(:obj) { TestModel.new }
 
   IMAGE_FILE_NAME = "spec/fixtures/big.jpg"
+  FLASH_FILE_NAME = "spec/fixtures/flash.swf"
   EPS_FILE_NAME = "spec/fixtures/sample.eps"
   PDF_FILE_NAME = "spec/fixtures/sample.pdf"
 
@@ -24,6 +25,14 @@ describe TestUploader do
       corrupted_file: File.open("spec/fixtures/corrupted.eps"),
       file_name: File.basename(EPS_FILE_NAME),
       mime_type: MIME::Types.type_for(EPS_FILE_NAME).first.to_s
+    },
+    flash: {
+      original_size: [728, 90],
+      version_size: [200, 200],
+      file: File.open(FLASH_FILE_NAME),
+      file_name: File.basename(FLASH_FILE_NAME),
+      corrupted_file: File.open("spec/fixtures/corrupted_flash.swf"),
+      mime_type: MIME::Types.type_for(FLASH_FILE_NAME).first.to_s
     },
     pdf: {
       original_size: [360, 360],

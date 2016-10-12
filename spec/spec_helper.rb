@@ -29,6 +29,8 @@ require 'support/test_uploader'
 require 'support/test_model'
 require 'support/test_composed_model'
 require 'fog'
+require 'zlib'
+require 'image_size'
 
 RSpec.configure do |config|
   config.before do

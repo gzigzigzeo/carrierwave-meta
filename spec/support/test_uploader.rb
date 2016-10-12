@@ -12,7 +12,11 @@ class TestUploader < CarrierWave::Uploader::Base
 
   process :store_meta => [{md5sum: true}]
   version :version do
-    process :resize_to_fill => [200, 200]
+    process :resize_to_fill => [200, 200], :if => :image_file?
     process :store_meta
+  end
+
+  def image_file? file
+    file.content_type =~ /image/
   end
 end
