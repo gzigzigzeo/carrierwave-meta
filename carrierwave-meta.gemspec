@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
+  s.license = 'MIT'
 
   s.add_dependency(%q<carrierwave>, [">= 0.5.7"])
   s.add_dependency(%q<activesupport>, [">= 3.0"])
@@ -26,5 +27,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency(%q<sqlite3-ruby>)
   s.add_development_dependency(%q<rmagick>)
   s.add_development_dependency(%q<mini_magick>)
-  s.add_development_dependency(%q<mime-types>)
+  s.add_development_dependency(%q<carrierwave-imagesorcery>)
+  s.add_development_dependency(%q<carrierwave-vips>)
+  s.add_development_dependency(%q<fog>, '~> 1.3.1')
+  s.add_development_dependency(%q<simplecov>)
+  s.add_development_dependency(%q<activerecord>, '>= 3.0')
 end

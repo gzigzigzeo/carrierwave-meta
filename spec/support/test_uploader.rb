@@ -1,11 +1,7 @@
 class TestUploader < CarrierWave::Uploader::Base
-  if PROCESSOR == :mini_magick
-    include CarrierWave::MiniMagick
-  else
-    include CarrierWave::RMagick
-  end
+  include CurrentProcessor
   include CarrierWave::Meta
-  
+
   def store_dir
     "tmp/store"
   end
@@ -14,9 +10,7 @@ class TestUploader < CarrierWave::Uploader::Base
     "tmp/cache"
   end
 
-  storage :file
-
-  process :store_meta
+  process :store_meta => [{md5sum: true}]
   version :version do
     process :resize_to_fill => [200, 200], :if => :image_file?
     process :store_meta

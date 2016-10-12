@@ -2,230 +2,158 @@ require 'spec_helper'
 require 'mime/types'
 
 describe TestUploader do
-  ORIGINAL_SIZE = [600, 277]
-  ORIGINAL_FLASH_SIZE = [728, 90]
-  VERSION_SIZE = [200, 200]
-
-  let(:file) { File.open("spec/fixtures/big.jpg") }
-  let(:corrupted_file) { File.open("spec/fixtures/corrupted.bmp") }
-  let(:file_name) { File.basename(file.path) }
-  let(:flash_file) { File.open("spec/fixtures/flash.swf") }
-  let(:corrupted_flash_file) { File.open("spec/fixtures/corrupted_flash.swf") }
-  let(:flash_file_name) { File.basename(flash_file.path) }
   let(:obj) { TestModel.new }
 
-  def uploader_values_are_correct(uploader)
-    uploader.width.should eq(ORIGINAL_SIZE[0])
-    uploader.height.should eq(ORIGINAL_SIZE[1])
-    uploader.image_size.should eq(ORIGINAL_SIZE)
-    uploader.content_type.should eq(MIME::Types.type_for(file_name).first.to_s)
-    uploader.file_size.should_not be_blank
-    uploader.image_size_s.should eq(ORIGINAL_SIZE.join('x'))
+  IMAGE_FILE_NAME = "spec/fixtures/big.jpg"
+  FLASH_FILE_NAME = "spec/fixtures/flash.swf"
+  EPS_FILE_NAME = "spec/fixtures/sample.eps"
+  PDF_FILE_NAME = "spec/fixtures/sample.pdf"
 
-    uploader.version.width.should eq(VERSION_SIZE[0])
-    uploader.version.height.should eq(VERSION_SIZE[1])
-    uploader.version.image_size.should eq(VERSION_SIZE)
-    uploader.version.content_type.should eq(MIME::Types.type_for(file_name).first.to_s)
-    uploader.version.file_size.should_not be_blank
-    uploader.version.image_size_s.should eq(VERSION_SIZE.join('x'))
-  end
+  FORMATS = {
+    image: {
+      original_size: [600, 277],
+      version_size: [200, 200],
+      file: File.open(IMAGE_FILE_NAME),
+      file_name: File.basename(IMAGE_FILE_NAME),
+      corrupted_file: File.open("spec/fixtures/corrupted.bmp"),
+      mime_type: MIME::Types.type_for(IMAGE_FILE_NAME).first.to_s
+    },
+    eps: {
+      original_size: [464, 205],
+      version_size: [200, 200],
+      file: File.open(EPS_FILE_NAME),
+      corrupted_file: File.open("spec/fixtures/corrupted.eps"),
+      file_name: File.basename(EPS_FILE_NAME),
+      mime_type: MIME::Types.type_for(EPS_FILE_NAME).first.to_s
+    },
+    flash: {
+      original_size: [728, 90],
+      version_size: [200, 200],
+      file: File.open(FLASH_FILE_NAME),
+      file_name: File.basename(FLASH_FILE_NAME),
+      corrupted_file: File.open("spec/fixtures/corrupted_flash.swf"),
+      mime_type: MIME::Types.type_for(FLASH_FILE_NAME).first.to_s
+    },
+    pdf: {
+      original_size: [360, 360],
+      version_size: [200, 200],
+      file: File.open(PDF_FILE_NAME),
+      corrupted_file: File.open("spec/fixtures/corrupted.pdf"),
+      file_name: File.basename(PDF_FILE_NAME),
+      mime_type: MIME::Types.type_for(PDF_FILE_NAME).first.to_s
+    }
+  }
 
-  def obj_values_are_correct(obj)
-    obj.image_width.should eq(ORIGINAL_SIZE[0])
-    obj.image_height.should eq(ORIGINAL_SIZE[1])
-    obj.image_image_size.should eq(ORIGINAL_SIZE)
-    obj.image_content_type.should eq(MIME::Types.type_for(file_name).first.to_s)
-    obj.image_file_size.should_not be_blank
+  def obj_values_eq(obj, size_arg, args, prefix = nil)
+    size = args[size_arg]
 
-    obj.image_version_width.should eq(VERSION_SIZE[0])
-    obj.image_version_height.should eq(VERSION_SIZE[1])
-    obj.image_version_image_size.should eq(VERSION_SIZE)
-    obj.image_version_content_type.should eq(MIME::Types.type_for(file_name).first.to_s)
-    obj.image_version_file_size.should_not be_blank
-  end
+    obj.send(obj_value_name(:width, prefix)).should eq(size.first)
+    obj.send(obj_value_name(:height, prefix)).should eq(size.last)
+    obj.send(obj_value_name(:image_size, prefix)).should eq(size)
+    obj.send(obj_value_name(:content_type, prefix)).should eq(args[:mime_type])
+    obj.send(obj_value_name(:file_size, prefix)).should_not be_blank
 
-  def uploader_values_are_correct_with_flash(uploader)
-    uploader.width.should eq(ORIGINAL_FLASH_SIZE[0])
-    uploader.height.should eq(ORIGINAL_FLASH_SIZE[1])
-    uploader.image_size.should eq(ORIGINAL_FLASH_SIZE)
-    uploader.content_type.should eq(MIME::Types.type_for(flash_file_name).first.to_s)
-    uploader.file_size.should_not be_blank
-    uploader.image_size_s.should eq(ORIGINAL_FLASH_SIZE.join('x'))
-
-    uploader.version.width.should eq(ORIGINAL_FLASH_SIZE[0])
-    uploader.version.height.should eq(ORIGINAL_FLASH_SIZE[1])
-    uploader.version.image_size.should eq(ORIGINAL_FLASH_SIZE)
-    uploader.version.content_type.should eq(MIME::Types.type_for(flash_file_name).first.to_s)
-    uploader.version.file_size.should_not be_blank
-    uploader.version.image_size_s.should eq(ORIGINAL_FLASH_SIZE.join('x'))
-  end
-
-  def obj_values_are_correct_with_flash(obj)
-    obj.image_width.should eq(ORIGINAL_FLASH_SIZE[0])
-    obj.image_height.should eq(ORIGINAL_FLASH_SIZE[1])
-    obj.image_image_size.should eq(ORIGINAL_FLASH_SIZE)
-    obj.image_content_type.should eq(MIME::Types.type_for(flash_file_name).first.to_s)
-    obj.image_file_size.should_not be_blank
-
-    obj.image_version_width.should eq(ORIGINAL_FLASH_SIZE[0])
-    obj.image_version_height.should eq(ORIGINAL_FLASH_SIZE[1])
-    obj.image_version_image_size.should eq(ORIGINAL_FLASH_SIZE)
-    obj.image_version_content_type.should eq(MIME::Types.type_for(flash_file_name).first.to_s)
-    obj.image_version_file_size.should_not be_blank
-  end
-
-  context "detached uploader" do
-    it "stores metadata after cache!" do
-      uploader = TestUploader.new
-      uploader.cache!(file)
-      uploader_values_are_correct(uploader)
-    end
-
-    it "stores metadata after store!" do
-      uploader = TestUploader.new
-      uploader.store!(file)
-      uploader_values_are_correct(uploader)
-    end
-
-    it "has metadata after cache!/retrieve_from_cache!" do
-      uploader = TestUploader.new
-      uploader.cache!(file)
-      cache_name = uploader.cache_name
-
-      uploader = TestUploader.new
-      uploader.retrieve_from_cache!(cache_name)
-      uploader_values_are_correct(uploader)
-    end
-
-    it "has metadata after store!/retrieve_from_store!" do
-      uploader = TestUploader.new
-      uploader.store!(file)
-      uploader_values_are_correct(uploader)
-
-      uploader = TestUploader.new
-      uploader.retrieve_from_store!(File.basename(file.path))
-      uploader_values_are_correct(uploader)
+    if obj.is_a?(CarrierWave::Uploader::Base)
+      obj.send(obj_value_name(:image_size_s, prefix)).should eq(size.join('x'))
     end
   end
 
-  context "attached uploader" do
-    it "stores metadata after cache!" do
-      uploader = TestUploader.new(obj, :image)
-      uploader.cache!(file)
-      uploader_values_are_correct(uploader)
-      obj_values_are_correct(obj)
-    end
-
-    it "stores metadata after store!" do
-      uploader = TestUploader.new(obj, :image)
-      uploader.store!(file)
-      uploader_values_are_correct(uploader)
-      obj_values_are_correct(obj)
-    end
-
-    it "has metadata after cache!/retrieve_from_cache!" do
-      uploader = TestUploader.new(obj, :image)
-      uploader.cache!(file)
-      cache_name = uploader.cache_name
-
-      uploader = TestUploader.new(obj, :image)
-      uploader.retrieve_from_cache!(cache_name)
-      uploader_values_are_correct(uploader)
-    end
-
-    it "has metadata after store!/retrieve_from_store!" do
-      uploader = TestUploader.new(obj, :image)
-      uploader.store!(file)
-      uploader_values_are_correct(uploader)
-
-      uploader = TestUploader.new(obj, :image)
-      uploader.retrieve_from_store!(File.basename(file.path))
-      uploader_values_are_correct(uploader)
-    end
+  def obj_value_name(name, prefix)
+    [prefix, name].compact.join('_')
   end
 
-  context "when file is corrupted/can not be processed" do
-    it "passes without exceptions" do
-      uploader = TestBlankUploader.new(obj, :image)
-      proc { uploader.store!(corrupted_file) }.should_not raise_error
-    end
+  def uploader_values_eq(uploader, args)
+    obj_values_eq(uploader, :original_size, args)
+    obj_values_eq(uploader.version, :version_size, args)
+    uploader.md5sum.should_not be_blank
+    uploader.version.md5sum.should be_blank
   end
 
-  context "flash / swf" do
-    context "detached uploader" do
+  def model_values_eq(model, args)
+    obj_values_eq(model, :original_size, args, 'image')
+    obj_values_eq(model, :version_size, args, 'image_version')
+    model.image_md5sum.should_not be_blank
+  end
+
+  FORMATS.each do |format, args|
+    next if not(CarrierWave::Meta.ghostscript_enabled) and [:pdf, :eps].include?(format)
+    context "detached uploader for #{format}" do
       it "stores metadata after cache!" do
         uploader = TestUploader.new
-        uploader.cache!(flash_file)
-        uploader_values_are_correct_with_flash(uploader)
+        uploader.cache!(args[:file])
+        uploader_values_eq(uploader, args)
       end
 
       it "stores metadata after store!" do
         uploader = TestUploader.new
-        uploader.store!(flash_file)
-        uploader_values_are_correct_with_flash(uploader)
+        uploader.store!(args[:file])
+        uploader_values_eq(uploader, args)
       end
 
       it "has metadata after cache!/retrieve_from_cache!" do
         uploader = TestUploader.new
-        uploader.cache!(flash_file)
+        uploader.cache!(args[:file])
         cache_name = uploader.cache_name
-
         uploader = TestUploader.new
         uploader.retrieve_from_cache!(cache_name)
-        uploader_values_are_correct_with_flash(uploader)
+
+        uploader_values_eq(uploader, args)
       end
 
       it "has metadata after store!/retrieve_from_store!" do
         uploader = TestUploader.new
-        uploader.store!(flash_file)
-        uploader_values_are_correct_with_flash(uploader)
+        uploader.store!(args[:file])
+        uploader_values_eq(uploader, args)
 
         uploader = TestUploader.new
-        uploader.retrieve_from_store!(File.basename(flash_file.path))
-        uploader_values_are_correct_with_flash(uploader)
+        uploader.retrieve_from_store!(args[:file_name])
+        uploader_values_eq(uploader, args)
       end
     end
 
-    context "attached uploader" do
+    context "attached uploader for #{format}" do
       it "stores metadata after cache!" do
         uploader = TestUploader.new(obj, :image)
-        uploader.cache!(flash_file)
-        uploader_values_are_correct_with_flash(uploader)
-        obj_values_are_correct_with_flash(obj)
+        uploader.cache!(args[:file])
+        uploader_values_eq(uploader, args)
+        model_values_eq(obj, args)
       end
 
       it "stores metadata after store!" do
         uploader = TestUploader.new(obj, :image)
-        uploader.store!(flash_file)
-        uploader_values_are_correct_with_flash(uploader)
-        obj_values_are_correct_with_flash(obj)
+        uploader.store!(args[:file])
+        uploader_values_eq(uploader, args)
+        model_values_eq(obj, args)
       end
 
       it "has metadata after cache!/retrieve_from_cache!" do
         uploader = TestUploader.new(obj, :image)
-        uploader.cache!(flash_file)
+        uploader.cache!(args[:file])
         cache_name = uploader.cache_name
 
         uploader = TestUploader.new(obj, :image)
         uploader.retrieve_from_cache!(cache_name)
-        uploader_values_are_correct_with_flash(uploader)
+        uploader_values_eq(uploader, args)
+        model_values_eq(obj, args)
       end
 
       it "has metadata after store!/retrieve_from_store!" do
         uploader = TestUploader.new(obj, :image)
-        uploader.store!(flash_file)
-        uploader_values_are_correct_with_flash(uploader)
+        uploader.store!(args[:file])
+        uploader_values_eq(uploader, args)
+        model_values_eq(obj, args)
 
         uploader = TestUploader.new(obj, :image)
-        uploader.retrieve_from_store!(File.basename(flash_file.path))
-        uploader_values_are_correct_with_flash(uploader)
+        uploader.retrieve_from_store!(args[:file_name])
+        uploader_values_eq(uploader, args)
+        model_values_eq(obj, args)
       end
     end
 
-    context "when flash file is corrupted/can not be processed" do
+    context "when file is corrupted/can not be processed" do
       it "passes without exceptions" do
         uploader = TestBlankUploader.new(obj, :image)
-        proc { uploader.store!(corrupted_flash_file) }.should_not raise_error
+        proc { uploader.store!(args[:corrupted_file]) }.should_not raise_error
       end
     end
   end

@@ -1,9 +1,5 @@
 class TestBlankUploader < CarrierWave::Uploader::Base
-  if PROCESSOR == :mini_magick
-    include CarrierWave::MiniMagick
-  else
-    include CarrierWave::RMagick
-  end
+  include CurrentProcessor
   include CarrierWave::Meta
 
   def store_dir
@@ -14,6 +10,5 @@ class TestBlankUploader < CarrierWave::Uploader::Base
     "tmp/cache"
   end
 
-  storage :file
   process :store_meta
 end
